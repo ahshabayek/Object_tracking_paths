@@ -1,0 +1,148 @@
+# Multi-Object Tracking Parameters
+# Supports: BoT-SORT, ByteTrack, OC-SORT, DeepSORT
+
+tracking:
+  # Tracker selection
+  tracker: "botsort"  # Options: botsort, bytetrack, ocsort, deepsort, strongsort
+  
+  # Common thresholds
+  track_high_thresh: 0.5   # High confidence threshold for first association
+  track_low_thresh: 0.1    # Low confidence threshold for second association
+  new_track_thresh: 0.6    # Threshold for initializing new tracks
+  track_buffer: 30         # Frames to keep lost tracks before deletion
+  match_thresh: 0.8        # IoU threshold for matching
+  
+  # Minimum detection requirements
+  min_box_area: 10         # Minimum bounding box area in pixels
+  min_hits: 3              # Minimum hits before track is confirmed
+
+  # ============================================================
+  # BoT-SORT Specific Settings
+  # ============================================================
+  botsort:
+    # Camera Motion Compensation (CMC)
+    cmc_method: "sparseOptFlow"  # Options: sparseOptFlow, orb, ecc, none
+    
+    # Appearance matching
+    proximity_thresh: 0.5      # Spatial proximity threshold
+    appearance_thresh: 0.25    # Appearance similarity threshold
+    
+    # Kalman filter settings
+    with_reid: true            # Use Re-ID features
+    fast_reid_config: "configs/MOT17/sbs_S50.yml"
+    fast_reid_weights: "models/mot17_sbs_S50.pth"
+    
+    # Gating
+    lambda_: 0.98              # Weight for combining IoU and appearance
+    ema_alpha: 0.9             # EMA smoothing for appearance features
+    
+    # Advanced features
+    gmc: true                  # Global motion compensation
+    fuse_score: true           # Fuse detection score with track confidence
+  
+  # ============================================================
+  # ByteTrack Specific Settings
+  # ============================================================
+  bytetrack:
+    # Association method
+    use_byte: true             # Use BYTE association (low confidence matching)
+    
+    # Confidence thresholds
+    det_thresh: 0.5            # Detection threshold
+    low_thresh: 0.1            # Low confidence threshold
+    
+    # Motion model
+    kalman_format: "xyah"      # Format: xyah (center + aspect + height) or xywh
+    
+    # Second association
+    second_match_thresh: 0.5   # IoU threshold for second matching
+  
+  # ============================================================
+  # OC-SORT Specific Settings
+  # ============================================================
+  ocsort:
+    # Observation-centric association
+    delta_t: 3                 # Time delta for velocity estimation
+    asso_func: "iou"           # Association function: iou, giou, ciou, diou
+    
+    # Virtual trajectory generation
+    inertia: 0.2               # Inertia weight for velocity estimation
+    use_byte: false            # Whether to use BYTE matching
+    
+    # Observation association
+    obs_track_ratio: 0.8       # Weight for observation vs track
+  
+  # ============================================================
+  # DeepSORT Specific Settings
+  # ============================================================
+  deepsort:
+    # Re-ID model
+    reid_model: "osnet_x0_25"  # Options: osnet_x0_25, osnet_x0_5, osnet_x1_0
+    reid_weights: "models/osnet_x0_25_msmt17.pt"
+    
+    # Matching cascade
+    max_dist: 0.2              # Maximum cosine distance
+    max_iou_distance: 0.7      # Maximum IoU distance
+    
+    # Track management
+    max_age: 70                # Maximum frames to keep track without detection
+    n_init: 3                  # Number of consecutive detections to confirm track
+    nn_budget: 100             # Maximum features per track
+    
+    # Kalman filter
+    std_weight_position: 0.05
+    std_weight_velocity: 0.00625
+  
+  # ============================================================
+  # StrongSORT Specific Settings
+  # ============================================================
+  strongsort:
+    # Enhanced motion compensation
+    ecc: true                  # Enhanced Correlation Coefficient
+    mc_lambda: 0.98            # Motion compensation weight
+    
+    # Appearance feature enhancement
+    ema_alpha: 0.9             # EMA for appearance smoothing
+    
+    # After-processing
+    afi: true                  # Appearance-free link (AFI)
+    gsi: true                  # Gaussian-smoothed interpolation (GSI)
+    gsi_max_age: 30            # Max gap for GSI interpolation
+
+# ============================================================
+# Re-ID Feature Extraction Settings
+# ============================================================
+reid:
+  enable: true
+  model: "osnet_ain_x1_0"      # Options: osnet_*, resnet50_*, market1501
+  weights_path: "models/reid/"
+  input_size: [256, 128]       # Height x Width
+  batch_size: 32
+  normalize:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+  
+  # Feature aggregation
+  feature_dim: 512
+  pooling: "gem"               # Options: avg, max, gem (generalized mean)
+
+# ============================================================
+# Evaluation Metrics
+# ============================================================
+evaluation:
+  metrics:
+    - "MOTA"                   # Multiple Object Tracking Accuracy
+    - "IDF1"                   # ID F1 Score
+    - "HOTA"                   # Higher Order Tracking Accuracy
+    - "AssA"                   # Association Accuracy
+    - "DetA"                   # Detection Accuracy
+    - "MT"                     # Mostly Tracked
+    - "ML"                     # Mostly Lost
+    - "FP"                     # False Positives
+    - "FN"                     # False Negatives
+    - "IDs"                    # ID Switches
+    - "Frag"                   # Track Fragmentations
+  
+  # Evaluation settings
+  min_iou: 0.5                 # Minimum IoU for matching
+  ignore_unknown: true         # Ignore unknown classes

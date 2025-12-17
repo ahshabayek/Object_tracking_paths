@@ -1,0 +1,243 @@
+# Training Hyperparameters
+# Common settings for training detection, tracking, and lane models
+
+training:
+  # General settings
+  seed: 42
+  deterministic: true
+  
+  # Hardware
+  device: "cuda"
+  num_gpus: 1
+  mixed_precision: true  # Automatic mixed precision (AMP)
+  compile_model: false   # torch.compile() for PyTorch 2.0+
+  
+  # Distributed training
+  distributed:
+    enable: false
+    backend: "nccl"
+    world_size: 1
+    
+# ============================================================
+# Detection Training
+# ============================================================
+detection_training:
+  # Dataset
+  dataset:
+    name: "coco"         # coco, objects365, openimages
+    train_path: "data/coco/train2017"
+    val_path: "data/coco/val2017"
+    ann_file: "data/coco/annotations/instances_train2017.json"
+    
+  # Training schedule
+  epochs: 300
+  warmup_epochs: 5
+  
+  # Batch settings
+  batch_size: 16
+  accumulate_grad_batches: 1
+  num_workers: 8
+  
+  # Optimizer
+  optimizer:
+    name: "AdamW"
+    lr: 0.0001
+    weight_decay: 0.0001
+    betas: [0.9, 0.999]
+    
+  # Learning rate scheduler
+  scheduler:
+    name: "CosineAnnealingLR"
+    T_max: 300
+    eta_min: 0.00001
+    
+  # Alternative: OneCycleLR
+  # scheduler:
+  #   name: "OneCycleLR"
+  #   max_lr: 0.001
+  #   pct_start: 0.1
+  
+  # Data augmentation
+  augmentation:
+    mosaic: 1.0          # Mosaic probability
+    mixup: 0.15          # MixUp probability
+    copy_paste: 0.3      # Copy-paste augmentation
+    hsv_h: 0.015         # Hue shift
+    hsv_s: 0.7           # Saturation shift
+    hsv_v: 0.4           # Value shift
+    degrees: 0.0         # Rotation degrees
+    translate: 0.1       # Translation
+    scale: 0.9           # Scale range
+    shear: 0.0           # Shear degrees
+    perspective: 0.0     # Perspective
+    flipud: 0.0          # Vertical flip
+    fliplr: 0.5          # Horizontal flip
+    
+  # Loss settings
+  loss:
+    box_loss: "CIoU"     # Options: CIoU, GIoU, DIoU, IoU
+    cls_loss: "BCE"      # Options: BCE, focal
+    dfl_loss: true       # Distribution Focal Loss
+    box_weight: 7.5
+    cls_weight: 0.5
+    dfl_weight: 1.5
+    
+  # Early stopping
+  early_stopping:
+    enable: true
+    patience: 50
+    monitor: "val/mAP50-95"
+    mode: "max"
+    
+  # Checkpointing
+  checkpoint:
+    save_top_k: 3
+    monitor: "val/mAP50-95"
+    save_last: true
+    
+# ============================================================
+# Tracking Training (Re-ID Model)
+# ============================================================
+tracking_training:
+  # Dataset for ReID
+  dataset:
+    name: "mot17"        # mot17, mot20, market1501
+    train_path: "data/MOT17/train"
+    
+  # Training schedule
+  epochs: 120
+  warmup_epochs: 10
+  
+  # Batch settings
+  batch_size: 64
+  num_instances: 4       # Instances per ID in batch
+  num_workers: 8
+  
+  # Optimizer
+  optimizer:
+    name: "Adam"
+    lr: 0.00035
+    weight_decay: 0.0005
+    
+  # Scheduler
+  scheduler:
+    name: "MultiStepLR"
+    milestones: [40, 70]
+    gamma: 0.1
+    
+  # Loss
+  loss:
+    triplet_loss: true
+    triplet_margin: 0.3
+    center_loss: true
+    center_loss_weight: 0.0005
+    softmax_loss: true
+    
+  # Data augmentation
+  augmentation:
+    random_flip: 0.5
+    random_crop: true
+    random_erase: 0.5
+    color_jitter: true
+    
+# ============================================================
+# Lane Detection Training
+# ============================================================
+lane_training:
+  # Dataset
+  dataset:
+    name: "culane"       # culane, tusimple, llamas, curvelanes
+    root_path: "data/CULane"
+    list_path: "data/CULane/list/train_gt.txt"
+    
+  # Training schedule
+  epochs: 20
+  warmup_epochs: 1
+  
+  # Batch settings
+  batch_size: 24
+  num_workers: 8
+  
+  # Optimizer
+  optimizer:
+    name: "AdamW"
+    lr: 0.0006
+    weight_decay: 0.01
+    
+  # Scheduler
+  scheduler:
+    name: "CosineAnnealingLR"
+    T_max: 20
+    eta_min: 0.00001
+    
+  # Data augmentation
+  augmentation:
+    random_flip: 0.5
+    random_scale: [0.8, 1.2]
+    random_crop: true
+    color_jitter:
+      brightness: 0.3
+      contrast: 0.3
+      saturation: 0.3
+      hue: 0.1
+    random_rotate: 6       # degrees
+    
+  # Loss weights (CLRNet)
+  loss:
+    cls_weight: 2.0
+    xyt_weight: 0.2
+    iou_weight: 2.0
+    seg_weight: 1.0
+    
+# ============================================================
+# MLFlow Tracking Settings
+# ============================================================
+mlflow:
+  tracking_uri: "mlruns"
+  experiment_name: "cv_pipeline"
+  
+  # What to log
+  log_model: true
+  log_input_examples: false
+  
+  # Artifact logging
+  log_artifacts:
+    - "confusion_matrix"
+    - "pr_curve"
+    - "training_curves"
+    - "sample_predictions"
+    
+  # Tags
+  tags:
+    project: "cv_pipeline"
+    framework: "kedro"
+    
+  # Nested runs
+  nested_runs: true
+  
+# ============================================================
+# Callbacks
+# ============================================================
+callbacks:
+  # Model checkpoint
+  model_checkpoint:
+    enable: true
+    dirpath: "checkpoints/"
+    filename: "{epoch}-{val_loss:.4f}"
+    
+  # Learning rate monitor
+  lr_monitor:
+    enable: true
+    logging_interval: "step"
+    
+  # Early stopping
+  early_stopping:
+    enable: true
+    monitor: "val_loss"
+    patience: 20
+    mode: "min"
+    
+  # Rich progress bar
+  progress_bar:
+    enable: true
+    refresh_rate: 10

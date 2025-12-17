@@ -1,0 +1,220 @@
+# Lane Detection Parameters
+# Supports: CLRerNet, CLRNet, LaneATT, UFLD, CondLaneNet
+
+lane:
+  # Model selection
+  model: "clrernet"  # Options: clrernet, clrnet, laneatt, ufld, condlanenet
+  
+  # Model architecture
+  backbone: "resnet34"  # Options: resnet18, resnet34, resnet50, dla34
+  pretrained: true
+  
+  # Input configuration
+  img_h: 320
+  img_w: 800
+  ori_img_h: 720
+  ori_img_w: 1280
+  cut_height: 270  # Crop top of image (sky region)
+  
+  # Detection settings
+  num_lanes: 4           # Maximum number of lanes to detect
+  num_points: 72         # Points per lane for representation
+  conf_threshold: 0.4    # Confidence threshold
+  nms_threshold: 50      # NMS threshold (in pixels)
+  
+  # Device settings
+  device: "cuda:0"
+  half_precision: true
+  batch_size: 1
+
+  # ============================================================
+  # CLRerNet Specific Settings (SOTA - WACV 2024)
+  # ============================================================
+  clrernet:
+    # LaneIoU settings
+    use_laneiou: true
+    laneiou_weight: 3.0
+    
+    # Cross-layer refinement
+    num_priors: 192
+    refine_layers: 3
+    fc_hidden_dim: 64
+    sample_points: 36
+    
+    # Loss weights
+    cls_weight: 2.0
+    xyt_weight: 0.5
+    seg_weight: 1.0
+    
+    # ROI Gather
+    roi_gather_method: "bilinear"
+    
+  # ============================================================
+  # CLRNet Specific Settings (CVPR 2022)
+  # ============================================================
+  clrnet:
+    # Architecture
+    num_priors: 192
+    refine_layers: 3
+    fc_hidden_dim: 64
+    sample_points: 36
+    
+    # Feature pyramid
+    feat_channels: 64
+    
+    # Loss weights
+    cls_weight: 2.0
+    xyt_weight: 0.2
+    iou_weight: 2.0
+    seg_weight: 1.0
+    
+    # ROI settings
+    roi_gather_method: "bilinear"
+    
+  # ============================================================
+  # LaneATT Specific Settings
+  # ============================================================
+  laneatt:
+    # Anchor settings
+    anchor_freq_path: null  # Path to anchor frequency file
+    topk_anchors: 1000
+    
+    # Attention mechanism
+    attention_type: "self"  # self, cross
+    
+    # Architecture
+    S: 72                   # Number of strips/rows
+    
+    # NMS
+    nms_thres: 15.0         # NMS threshold in pixels
+    conf_threshold: 0.5
+    
+  # ============================================================
+  # UFLD (Ultra-Fast Lane Detection) Settings
+  # ============================================================
+  ufld:
+    # Grid settings
+    griding_num: 200        # Number of grid cells
+    cls_num_per_lane: 56    # Classification per lane
+    
+    # Row anchor settings
+    row_anchor: "tusimple"  # tusimple, culane
+    
+    # Ultra-fast specific
+    use_aux: false          # Auxiliary segmentation
+    
+  # ============================================================
+  # CondLaneNet Settings
+  # ============================================================
+  condlanenet:
+    # Conditional detection
+    num_proposals: 192
+    
+    # Dynamic convolution
+    dynamic_conv: true
+    
+    # Row-wise formulation
+    row_anchor_start: 160
+    row_anchor_end: 710
+    row_anchor_step: 10
+
+# ============================================================
+# Path/Lane Construction (Extended Module)
+# ============================================================
+path_construction:
+  enable: true
+  
+  # Curve fitting method
+  fitting_method: "bezier"  # Options: bezier, spline, polynomial, bspline
+  
+  # Bezier curve settings
+  bezier:
+    order: 3                # Cubic Bezier
+    num_control_points: 4
+    smoothing_factor: 0.5
+  
+  # Spline settings
+  spline:
+    smoothing: 0.5
+    degree: 3
+    
+  # Polynomial settings
+  polynomial:
+    degree: 3
+    
+  # Path planning parameters
+  lookahead_distance: 30.0   # meters
+  path_resolution: 0.1       # meters between path points
+  
+  # Lane fusion settings
+  fusion:
+    method: "weighted"       # Options: weighted, kalman, particle
+    temporal_smoothing: 0.8  # Weight for previous frame
+    confidence_weight: true  # Weight by detection confidence
+    
+  # Safety constraints
+  safety:
+    min_lane_width: 2.5      # meters
+    max_lane_width: 4.5      # meters
+    max_curvature: 0.2       # 1/m
+    lateral_offset_limit: 1.0 # meters from center
+
+# ============================================================
+# Driving Path Generation
+# ============================================================
+driving_path:
+  # Center line computation
+  compute_center_line: true
+  
+  # Object avoidance integration
+  object_avoidance:
+    enable: true
+    safety_margin: 2.0       # meters lateral buffer
+    time_horizon: 3.0        # seconds to predict
+    
+  # Trajectory smoothing
+  trajectory:
+    method: "mpc"            # Options: pure_pursuit, stanley, mpc
+    mpc_horizon: 20          # Planning horizon steps
+    
+  # Output format
+  output:
+    format: "waypoints"      # Options: waypoints, polynomial, spline
+    num_waypoints: 50
+    include_velocities: true
+
+# ============================================================
+# Evaluation Settings
+# ============================================================
+evaluation:
+  # Metrics
+  metrics:
+    - "F1"                   # F1 score
+    - "Precision"
+    - "Recall"
+    - "Accuracy"
+    - "FP"                   # False positive rate
+    - "FN"                   # False negative rate
+  
+  # IoU thresholds
+  iou_thresholds: [0.5, 0.75]
+  
+  # Dataset-specific
+  culane:
+    width_thresh: 30         # Threshold for CULane evaluation
+  tusimple:
+    accuracy_thresh: 0.85    # TuSimple accuracy threshold
+
+# ============================================================
+# Visualization
+# ============================================================
+visualization:
+  draw_lanes: true
+  draw_centerline: true
+  draw_path: true
+  lane_colors:
+    ego_left: [255, 0, 0]    # Red
+    ego_right: [0, 255, 0]   # Green
+    adjacent: [0, 0, 255]    # Blue
+  line_width: 3
+  point_radius: 5

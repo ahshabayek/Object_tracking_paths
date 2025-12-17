@@ -1,0 +1,203 @@
+# Kedro Data Catalog Configuration
+# This file defines all the data sources and sinks in the pipeline
+
+# ============================================================
+# RAW DATA
+# ============================================================
+
+raw_video:
+  type: cv_pipeline.datasets.VideoDataSet
+  filepath: data/01_raw/video.mp4
+  load_args:
+    target_fps: 30
+    resize: [1920, 1080]
+
+raw_images:
+  type: kedro.extras.datasets.pillow.ImageDataSet
+  filepath: data/01_raw/images
+  load_args:
+    mode: RGB
+
+raw_camera_stream:
+  type: cv_pipeline.datasets.CameraStreamDataSet
+  load_args:
+    source: 0  # Camera index or RTSP URL
+    buffer_size: 10
+    fps: 30
+
+# ============================================================
+# INTERMEDIATE DATA
+# ============================================================
+
+preprocessed_frames:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/preprocessed_frames.pkl
+  versioned: true
+
+augmented_frames:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/augmented_frames.pkl
+
+frame_metadata:
+  type: pandas.CSVDataSet
+  filepath: data/02_intermediate/frame_metadata.csv
+  save_args:
+    index: false
+
+# ============================================================
+# PRIMARY DATA (Detection Outputs)
+# ============================================================
+
+detection_results:
+  type: pickle.PickleDataSet
+  filepath: data/03_primary/detection_results.pkl
+  versioned: true
+
+detection_boxes:
+  type: json.JSONDataSet
+  filepath: data/03_primary/detection_boxes.json
+
+detection_scores:
+  type: pandas.CSVDataSet
+  filepath: data/03_primary/detection_scores.csv
+  save_args:
+    index: false
+
+# ============================================================
+# FEATURE DATA (Tracking Features)
+# ============================================================
+
+reid_features:
+  type: pickle.PickleDataSet
+  filepath: data/04_feature/reid_features.pkl
+
+track_embeddings:
+  type: pickle.PickleDataSet
+  filepath: data/04_feature/track_embeddings.pkl
+
+motion_features:
+  type: pandas.ParquetDataSet
+  filepath: data/04_feature/motion_features.parquet
+
+# ============================================================
+# MODEL INPUT
+# ============================================================
+
+detection_batch:
+  type: cv_pipeline.datasets.TensorDataSet
+  filepath: data/05_model_input/detection_batch.pt
+
+tracking_input:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/tracking_input.pkl
+
+lane_input:
+  type: cv_pipeline.datasets.TensorDataSet
+  filepath: data/05_model_input/lane_input.pt
+
+# ============================================================
+# MODELS
+# ============================================================
+
+detection_model:
+  type: cv_pipeline.datasets.PyTorchModelDataSet
+  filepath: data/06_models/detection_model.pt
+  versioned: true
+  save_args:
+    map_location: cpu
+
+tracking_reid_model:
+  type: cv_pipeline.datasets.PyTorchModelDataSet
+  filepath: data/06_models/reid_model.pt
+  versioned: true
+
+lane_detection_model:
+  type: cv_pipeline.datasets.PyTorchModelDataSet
+  filepath: data/06_models/lane_model.pt
+  versioned: true
+
+# ============================================================
+# MODEL OUTPUT
+# ============================================================
+
+tracked_objects:
+  type: pickle.PickleDataSet
+  filepath: data/07_model_output/tracked_objects.pkl
+  versioned: true
+
+track_trajectories:
+  type: pandas.ParquetDataSet
+  filepath: data/07_model_output/track_trajectories.parquet
+  save_args:
+    compression: snappy
+
+lane_detections:
+  type: pickle.PickleDataSet
+  filepath: data/07_model_output/lane_detections.pkl
+  versioned: true
+
+lane_curves:
+  type: json.JSONDataSet
+  filepath: data/07_model_output/lane_curves.json
+
+constructed_path:
+  type: pickle.PickleDataSet
+  filepath: data/07_model_output/constructed_path.pkl
+
+fused_scene:
+  type: pickle.PickleDataSet
+  filepath: data/07_model_output/fused_scene.pkl
+  versioned: true
+
+# ============================================================
+# REPORTING
+# ============================================================
+
+detection_metrics:
+  type: pandas.CSVDataSet
+  filepath: data/08_reporting/detection_metrics.csv
+  save_args:
+    index: false
+
+tracking_metrics:
+  type: pandas.CSVDataSet
+  filepath: data/08_reporting/tracking_metrics.csv
+  save_args:
+    index: false
+
+lane_metrics:
+  type: pandas.CSVDataSet
+  filepath: data/08_reporting/lane_metrics.csv
+  save_args:
+    index: false
+
+visualization_output:
+  type: kedro.extras.datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/visualizations/
+  save_args:
+    format: png
+    dpi: 150
+
+annotated_video:
+  type: cv_pipeline.datasets.VideoWriterDataSet
+  filepath: data/08_reporting/annotated_output.mp4
+  save_args:
+    fps: 30
+    codec: mp4v
+
+benchmark_report:
+  type: json.JSONDataSet
+  filepath: data/08_reporting/benchmark_report.json
+
+# ============================================================
+# MLFLOW ARTIFACTS
+# ============================================================
+
+mlflow_model_artifact:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataset
+  dataset:
+    type: pickle.PickleDataSet
+    filepath: mlruns/artifacts/model.pkl
+
+mlflow_metrics:
+  type: kedro_mlflow.io.metrics.MlflowMetricsHistoryDataset

@@ -1,0 +1,66 @@
+# Object Detection Parameters
+# Supports: RF-DETR, RT-DETR, YOLOv11, YOLOv12
+
+detection:
+  # Model selection
+  model: "rt_detr"  # Options: rf_detr, rt_detr, yolov12, yolov11, yolov10
+  variant: "l"       # Options: n (nano), s (small), m (medium), l (large), x (xlarge)
+  
+  # Model weights
+  weights:
+    rf_detr: "rfdetr-l.pt"
+    rt_detr: "rtdetr-l.pt"
+    yolov12: "yolov12l.pt"
+    yolov11: "yolo11l.pt"
+    yolov10: "yolov10l.pt"
+  
+  # Inference settings
+  confidence_threshold: 0.25
+  iou_threshold: 0.45
+  max_detections: 300
+  
+  # Input configuration
+  input_size: [640, 640]
+  normalize:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+  
+  # Class filtering (null for all classes)
+  # COCO classes: 0=person, 1=bicycle, 2=car, 3=motorcycle, etc.
+  classes: null
+  
+  # Specific class names for autonomous driving
+  target_classes:
+    vehicles: [2, 3, 5, 7]  # car, motorcycle, bus, truck
+    pedestrians: [0]         # person
+    cyclists: [1]            # bicycle
+    traffic: [9, 10, 11, 12] # traffic light, stop sign, etc.
+  
+  # Hardware settings
+  device: "cuda:0"  # cuda:0, cuda:1, cpu
+  half_precision: true  # FP16 inference
+  batch_size: 1
+  
+  # RT-DETR specific settings
+  rt_detr:
+    num_decoder_layers: 6  # Can adjust for speed/accuracy trade-off
+    num_queries: 300
+    backbone: "resnet50"  # resnet50, resnet101
+  
+  # RF-DETR specific settings  
+  rf_detr:
+    backbone: "dinov2_l"
+    num_queries: 900
+  
+  # YOLO specific settings
+  yolo:
+    augment: false  # Test-time augmentation
+    agnostic_nms: false
+    retina_masks: false
+
+# Model benchmark settings
+benchmark:
+  warmup_iterations: 50
+  test_iterations: 500
+  measure_memory: true
+  export_onnx: false
