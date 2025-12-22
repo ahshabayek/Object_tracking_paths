@@ -133,3 +133,34 @@ This document tracks the implementation progress of the Kedro + MLFlow CV pipeli
 **Next**: Metrics (mAP, MOTA, IDF1, F1)
 
 ---
+
+## 2024-12-21 - Metrics Implementation
+
+**Status**: ✅ Complete
+
+**Changes**: 
+- `src/cv_pipeline/utils/metrics.py` - Full metrics module for detection, tracking, and lane evaluation
+- Updated `src/cv_pipeline/utils/__init__.py` to export metrics functions
+
+**Detection Metrics**:
+- `compute_iou()`, `compute_iou_matrix()` - IoU computation
+- `compute_ap()` - Average Precision with VOC 2007/2010+ interpolation
+- `compute_precision_recall()` - PR curve computation
+- `compute_detection_metrics()` - Full mAP@50, mAP@75, mAP@50:95, precision, recall, F1
+
+**Tracking Metrics (MOT Challenge)**:
+- `TrackingFrame` - Data container for tracking data
+- `match_tracks()` - Hungarian algorithm matching
+- `compute_tracking_metrics()` - MOTA, MOTP, IDF1, IDP, IDR, ID switches, fragmentations
+
+**Lane Detection Metrics**:
+- `compute_lane_iou()` - Mask-based lane IoU
+- `compute_lane_accuracy()` - Per-frame accuracy
+- `compute_lane_metrics()` - Overall precision, recall, F1, accuracy
+
+**Utilities**:
+- `MetricsAccumulator` - Accumulate predictions across batches for final metric computation
+
+**Next**: Unit Tests
+
+---

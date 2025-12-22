@@ -13,6 +13,15 @@ from cv_pipeline.utils.cmc import (
     OpticalFlowCMC,
     SparseOptFlowCMC,
 )
+from cv_pipeline.utils.metrics import (
+    MetricsAccumulator,
+    TrackingFrame,
+    compute_ap,
+    compute_detection_metrics,
+    compute_iou,
+    compute_lane_metrics,
+    compute_tracking_metrics,
+)
 from cv_pipeline.utils.visualization import (
     Visualizer,
     draw_detections,
@@ -36,4 +45,12 @@ __all__ = [
     "FeatureCMC",
     "OpticalFlowCMC",
     "SparseOptFlowCMC",
+    # Metrics
+    "compute_detection_metrics",
+    "compute_tracking_metrics",
+    "compute_lane_metrics",
+    "compute_iou",
+    "compute_ap",
+    "TrackingFrame",
+    "MetricsAccumulator",
 ]
