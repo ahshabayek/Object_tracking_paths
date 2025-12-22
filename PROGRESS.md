@@ -103,3 +103,33 @@ This document tracks the implementation progress of the Kedro + MLFlow CV pipeli
 **Next**: Camera Motion Compensation (CMC)
 
 ---
+
+## 2024-12-21 - Camera Motion Compensation Implementation
+
+**Status**: ✅ Complete
+
+**Changes**: 
+- `src/cv_pipeline/utils/cmc.py` - Full CMC module with multiple algorithms
+- Updated `src/cv_pipeline/utils/__init__.py` to export CMC classes
+
+**Classes implemented**:
+1. `BaseCMC` - Abstract base with preprocessing, box/point transformation
+2. `ECCCMC` - Enhanced Correlation Coefficient (most accurate, slowest)
+3. `FeatureCMC` - Feature-based using ORB/SIFT/BRISK keypoint matching
+4. `OpticalFlowCMC` - Lucas-Kanade optical flow with corner detection
+5. `SparseOptFlowCMC` - Grid-based optical flow (more robust)
+6. `NoCMC` - Placeholder for stationary cameras
+7. `CameraMotionCompensator` - Factory class with motion smoothing
+
+**Features**:
+- Configurable downscaling for faster processing
+- RANSAC-based affine transformation estimation
+- Apply compensation to bounding boxes and points
+- Motion history smoothing
+- Support for translation, euclidean, affine, homography models
+
+**Integration**: Used by BoTSORTTracker for camera motion compensation before track prediction
+
+**Next**: Metrics (mAP, MOTA, IDF1, F1)
+
+---

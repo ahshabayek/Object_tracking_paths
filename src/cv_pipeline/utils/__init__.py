@@ -6,6 +6,13 @@ This package contains utility functions for:
 - Camera Motion Compensation (CMC)
 """
 
+from cv_pipeline.utils.cmc import (
+    ECCCMC,
+    CameraMotionCompensator,
+    FeatureCMC,
+    OpticalFlowCMC,
+    SparseOptFlowCMC,
+)
 from cv_pipeline.utils.visualization import (
     Visualizer,
     draw_detections,
@@ -16,10 +23,17 @@ from cv_pipeline.utils.visualization import (
 )
 
 __all__ = [
+    # Visualization
     "draw_detections",
     "draw_tracks",
     "draw_lanes",
     "draw_path",
     "draw_scene",
     "Visualizer",
+    # Camera Motion Compensation
+    "CameraMotionCompensator",
+    "ECCCMC",
+    "FeatureCMC",
+    "OpticalFlowCMC",
+    "SparseOptFlowCMC",
 ]
