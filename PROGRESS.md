@@ -47,3 +47,30 @@ This document tracks the implementation progress of the Kedro + MLFlow CV pipeli
 **Next**: Visualization utilities
 
 ---
+
+## 2024-12-21 - Visualization Utilities Implementation
+
+**Status**: ✅ Complete
+
+**Changes**: 
+- `src/cv_pipeline/utils/__init__.py` - Created utils package
+- `src/cv_pipeline/utils/visualization.py` - Full visualization module
+
+**Functions implemented**:
+1. `draw_detections()` - Draw bounding boxes with labels, confidence, class colors
+2. `draw_tracks()` - Draw tracked objects with IDs, trajectory trails, consistent colors
+3. `draw_lanes()` - Draw lane markings with type-specific colors (ego/adjacent)
+4. `draw_path()` - Draw drivable path with waypoints, boundaries, heading arrows
+5. `draw_scene()` - Composite function to draw all elements in proper order
+6. `Visualizer` class - Stateful visualizer maintaining trajectory history across frames
+
+**Features**:
+- Color palettes for classes (person=red, car=blue, etc.) and track IDs
+- Configurable transparency, thickness, font scale
+- Trail fading effect for trajectories
+- Frame info overlay (frame number, FPS, counts)
+- Video creation utility
+
+**Next**: Re-ID Extractor for BoT-SORT
+
+---
