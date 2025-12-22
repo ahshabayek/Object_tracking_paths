@@ -74,3 +74,32 @@ This document tracks the implementation progress of the Kedro + MLFlow CV pipeli
 **Next**: Re-ID Extractor for BoT-SORT
 
 ---
+
+## 2024-12-21 - Re-ID Extractor Implementation
+
+**Status**: ✅ Complete
+
+**Changes**: 
+- `src/cv_pipeline/models/__init__.py` - Created models package
+- `src/cv_pipeline/models/reid/__init__.py` - Full Re-ID feature extraction module
+
+**Classes implemented**:
+1. `BaseReIDExtractor` - Abstract base class with preprocessing, cropping, feature extraction
+2. `OSNetExtractor` - OSNet (Omni-Scale Network) with x1.0, x0.75, x0.5, x0.25 variants
+3. `FastReIDExtractor` - FastReID framework integration (ResNet, OSNet, ResNeSt backbones)
+4. `SimpleReIDExtractor` - Lightweight CNN extractor for basic use cases
+5. `ReIDExtractor` - Factory class for creating extractors
+
+**Features**:
+- Batch processing with configurable batch size
+- L2 normalization for features
+- Cosine and Euclidean distance computation
+- Placeholder models when torchreid/fastreid not installed
+- Crop padding support for better feature extraction
+- ImageNet normalization
+
+**Integration**: Used by BoTSORTTracker in tracking/nodes.py for appearance-based association
+
+**Next**: Camera Motion Compensation (CMC)
+
+---
