@@ -336,6 +336,47 @@ This document tracks the implementation progress of the Kedro + MLFlow CV pipeli
 
 ---
 
+## 2024-12-23 - Performance Optimization Utilities Implementation
+
+**Status**: ✅ Complete
+
+**Changes**: 
+- `src/cv_pipeline/utils/profiling.py` - Comprehensive profiling and optimization module
+- `tests/test_profiling.py` - Unit tests for profiling utilities (37 tests)
+- Updated `src/cv_pipeline/utils/__init__.py` to export profiling utilities
+
+**Features Implemented**:
+
+1. **Timing Utilities**:
+   - `Timer` - High-precision timer with CUDA sync support
+   - `TimingResult` - Container for timing statistics
+   - `Profiler` - Multi-operation profiler with context manager
+   - `timed()` - Decorator for timing function execution
+
+2. **Memory Tracking**:
+   - `MemoryStats` - GPU memory statistics container
+   - `get_gpu_memory_stats()` - Get current GPU memory usage
+   - `reset_gpu_memory_stats()` - Reset peak memory stats
+   - `clear_gpu_memory()` - Clear GPU cache
+   - `track_gpu_memory()` - Context manager for memory tracking
+
+3. **Benchmarking**:
+   - `BenchmarkResult` - Container for benchmark results
+   - `benchmark()` - Benchmark any callable with warmup
+   - `benchmark_model()` - Benchmark PyTorch models
+   - `ThroughputTracker` - Track FPS over time with rolling average
+
+4. **Model Optimization**:
+   - `optimize_for_inference()` - Freeze BN, set eval mode
+   - `compile_model()` - torch.compile wrapper (PyTorch 2.0+)
+   - `enable_cudnn_benchmark()` - Enable cuDNN benchmark mode
+   - `set_deterministic()` - Set deterministic mode for reproducibility
+   - `get_optimal_batch_size()` - Find optimal batch size for GPU
+
+**Test Results**: 37 tests passed
+
+---
+
 ## Summary
 
 All priority items have been implemented:
@@ -351,5 +392,6 @@ All priority items have been implemented:
 | Integration Tests | ✅ | `tests/test_integration.py` |
 | MLFlow Utilities | ✅ | `src/cv_pipeline/utils/mlflow_utils.py` |
 | Model Weights | ✅ | `src/cv_pipeline/utils/weights.py` |
+| Performance Profiling | ✅ | `src/cv_pipeline/utils/profiling.py` |
 
 ---
