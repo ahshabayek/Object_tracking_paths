@@ -4,6 +4,7 @@ This package contains utility functions for:
 - Visualization (drawing detections, tracks, lanes, paths)
 - Metrics computation (mAP, MOTA, IDF1, F1)
 - Camera Motion Compensation (CMC)
+- MLFlow experiment tracking
 """
 
 from cv_pipeline.utils.cmc import (
@@ -21,6 +22,19 @@ from cv_pipeline.utils.metrics import (
     compute_iou,
     compute_lane_metrics,
     compute_tracking_metrics,
+)
+from cv_pipeline.utils.mlflow_utils import (
+    ExperimentTracker,
+    is_mlflow_available,
+    log_detection_metrics,
+    log_dict_as_artifact,
+    log_lane_detection_metrics,
+    log_metrics_safe,
+    log_params_safe,
+    log_pipeline_run,
+    log_tracking_metrics,
+    mlflow_run,
+    mlflow_track,
 )
 from cv_pipeline.utils.visualization import (
     Visualizer,
@@ -53,4 +67,16 @@ __all__ = [
     "compute_ap",
     "TrackingFrame",
     "MetricsAccumulator",
+    # MLFlow
+    "is_mlflow_available",
+    "mlflow_run",
+    "mlflow_track",
+    "log_params_safe",
+    "log_metrics_safe",
+    "log_dict_as_artifact",
+    "log_detection_metrics",
+    "log_tracking_metrics",
+    "log_lane_detection_metrics",
+    "log_pipeline_run",
+    "ExperimentTracker",
 ]

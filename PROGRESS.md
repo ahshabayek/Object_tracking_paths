@@ -234,6 +234,60 @@ This document tracks the implementation progress of the Kedro + MLFlow CV pipeli
 
 ---
 
+## 2024-12-23 - MLFlow Utilities Implementation
+
+**Status**: ✅ Complete
+
+**Changes**: 
+- `src/cv_pipeline/utils/mlflow_utils.py` - Comprehensive MLFlow utilities module
+- `tests/test_mlflow_utils.py` - Unit tests for MLFlow utilities (25 tests)
+- Updated `src/cv_pipeline/utils/__init__.py` to export MLFlow utilities
+
+**Features Implemented**:
+1. **Core Utilities**:
+   - `is_mlflow_available()` - Check if MLFlow is installed
+   - `get_or_create_experiment()` - Create or retrieve experiment
+   - `_flatten_dict()` - Flatten nested dictionaries for logging
+
+2. **Safe Logging Functions**:
+   - `log_params_safe()` - Log parameters with truncation for long values
+   - `log_metrics_safe()` - Log metrics, skipping NaN/Inf values
+   - `log_dict_as_artifact()` - Log dictionaries as JSON artifacts
+   - `log_figure()` - Log matplotlib figures
+   - `log_image_artifact()` - Log numpy images
+   - `log_model_info()` - Log model configuration
+   - `log_pytorch_model()` - Log PyTorch models
+
+3. **Context Managers & Decorators**:
+   - `mlflow_run()` - Context manager for MLFlow runs
+   - `mlflow_track()` - Decorator for automatic tracking
+
+4. **ExperimentTracker Class**:
+   - Start/end runs with context manager support
+   - Log params, metrics, tags, artifacts
+   - Step counter for epoch tracking
+
+5. **Pipeline-Specific Logging**:
+   - `log_detection_metrics()` - Detection pipeline metrics
+   - `log_tracking_metrics()` - Tracking pipeline metrics
+   - `log_lane_detection_metrics()` - Lane detection metrics
+   - `log_pipeline_run()` - Log complete pipeline runs
+
+**Key Features**:
+- Graceful fallback when MLFlow is not installed
+- Automatic handling of NaN/Inf values
+- Parameter value truncation (500 char limit)
+- Nested dictionary flattening
+- Step-based metric logging
+
+**Test Results**: 25 tests passed
+
+**Next Steps**:
+- Model weights setup
+- Performance optimization
+
+---
+
 ## Summary
 
 All priority items have been implemented:
@@ -247,5 +301,6 @@ All priority items have been implemented:
 | Metrics | ✅ | `src/cv_pipeline/utils/metrics.py` |
 | Unit Tests | ✅ | `tests/test_*.py` |
 | Integration Tests | ✅ | `tests/test_integration.py` |
+| MLFlow Utilities | ✅ | `src/cv_pipeline/utils/mlflow_utils.py` |
 
 ---
