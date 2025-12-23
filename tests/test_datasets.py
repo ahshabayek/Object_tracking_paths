@@ -10,6 +10,16 @@ import pytest
 import torch
 import torch.nn as nn
 
+# Check if kedro is available
+try:
+    import kedro
+
+    KEDRO_AVAILABLE = True
+except ImportError:
+    KEDRO_AVAILABLE = False
+
+pytestmark = pytest.mark.skipif(not KEDRO_AVAILABLE, reason="kedro is not installed")
+
 
 class TestVideoDataSet:
     """Tests for VideoDataSet."""

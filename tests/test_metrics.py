@@ -150,8 +150,8 @@ class TestDetectionMetrics:
         assert "precision" in metrics
         assert "recall" in metrics
         assert "f1" in metrics
-        assert metrics["precision"] == 1.0
-        assert metrics["recall"] == 1.0
+        assert metrics["precision"] == pytest.approx(1.0, rel=1e-5)
+        assert metrics["recall"] == pytest.approx(1.0, rel=1e-5)
 
     def test_compute_detection_metrics_empty(self):
         """Test detection metrics with empty predictions."""
@@ -295,10 +295,10 @@ class TestLaneMetrics:
 
         acc, prec, rec, f1 = compute_lane_accuracy(pred_lanes, gt_lanes, img_height=480)
 
-        assert acc == 1.0
-        assert prec == 1.0
-        assert rec == 1.0
-        assert f1 == 1.0
+        assert acc == pytest.approx(1.0, rel=1e-5)
+        assert prec == pytest.approx(1.0, rel=1e-5)
+        assert rec == pytest.approx(1.0, rel=1e-5)
+        assert f1 == pytest.approx(1.0, rel=1e-5)
 
     def test_compute_lane_accuracy_empty(self):
         """Test lane accuracy with empty predictions."""

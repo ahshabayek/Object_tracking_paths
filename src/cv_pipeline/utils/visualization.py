@@ -18,7 +18,7 @@ import numpy as np
 
 # Default color palette (BGR format)
 COLORS = [
-    (255, 0, 0),      # Blue
+    (255, 0, 0),  # Blue
     (255, 0, 0),  # Blue
     (0, 255, 0),  # Green
     (0, 0, 255),  # Red
@@ -712,6 +712,7 @@ class Visualizer:
                     (0, 255, 255),
                     2,
                     cv2.LINE_AA,
+                )
 
         return output
 

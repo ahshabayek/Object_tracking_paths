@@ -1,0 +1,50 @@
+# Data Processing Parameters
+# Settings for video/image ingestion, preprocessing, and augmentation
+
+data_processing:
+  # Video loading settings
+  target_fps: 30           # Target frame rate for extraction
+  resize: [1280, 720]      # Target resolution [width, height]
+  max_frames: null         # Maximum frames to extract (null for all)
+  start_frame: 0           # Start frame index
+  end_frame: null          # End frame index (null for end of video)
+
+  # Preprocessing settings
+  input_size: [640, 640]   # Model input size [width, height]
+  normalize:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+  # Batching
+  batch_size: 1            # Frames per batch for inference
+
+  # Augmentation settings (for training/testing)
+  augmentation:
+    enable: false          # Enable augmentations
+    horizontal_flip: 0.0   # Probability of horizontal flip
+    color_jitter: false    # Random color jittering
+    random_brightness_contrast: false
+    blur: false            # Gaussian blur
+    noise: false           # Gaussian noise
+
+  # Color space
+  color_format: "RGB"      # RGB or BGR
+
+  # Memory optimization
+  prefetch: true           # Prefetch frames
+  num_workers: 4           # DataLoader workers
+
+# Camera stream settings (for live inference)
+camera:
+  source: 0                # Camera index or RTSP URL
+  buffer_size: 10          # Frame buffer size
+  fps: 30                  # Target capture FPS
+  threaded: true           # Use threaded capture
+
+# Output settings
+output:
+  save_video: true
+  video_fps: 30
+  video_codec: "mp4v"
+  save_frames: false       # Save individual frames
+  frame_format: "jpg"      # jpg or png
