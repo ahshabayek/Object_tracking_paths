@@ -194,6 +194,46 @@ This document tracks the implementation progress of the Kedro + MLFlow CV pipeli
 
 ---
 
+## 2024-12-23 - Integration Tests Implementation
+
+**Status**: ✅ Complete
+
+**Changes**: 
+- `tests/test_integration.py` - Comprehensive integration tests (25 test cases)
+- `conf/base/parameters/data_processing.yml` - Data processing parameters file
+- Fixed syntax error in `src/cv_pipeline/utils/visualization.py` (missing parenthesis)
+- Fixed floating point precision issues in `tests/test_metrics.py`
+- Added kedro availability check to `tests/test_datasets.py`
+
+**Integration Test Coverage**:
+- **Data Processing** (4 tests): preprocess_frames, create_batches, extract_metadata, apply_augmentations
+- **Object Detection** (3 tests): Detection dataclass, class filtering, metrics computation
+- **Tracking** (4 tests): KalmanBoxTracker, ByteTracker, IoU computation, trajectory extraction
+- **Lane Detection** (2 tests): Lane dataclass, curve fitting
+- **Path Construction** (2 tests): Waypoint dataclass, trajectory generation
+- **Visualization** (3 tests): Detection visualization, tracking visualization, Visualizer class
+- **Metrics** (2 tests): Detection metrics with pipeline output, tracking metrics with pipeline output
+- **CMC** (1 test): CMC with tracking boxes
+- **Dataset** (2 tests): TensorDataSet with batches, VideoWriterDataSet with visualized frames
+- **End-to-End** (2 tests): Full detection flow, full tracking flow
+
+**Key Features**:
+- Dynamic module importing to bypass kedro imports in `__init__.py`
+- Skip decorators for tests when dependencies are missing
+- Tests verify data flows between pipeline components
+- Works without full environment dependencies
+
+**Test Results**: 93 passed, 35 skipped (missing: kedro, albumentations, scipy)
+
+**Run tests**: `pytest tests/ -v`
+
+**Next Steps**:
+- MLFlow logging integration
+- Model weights setup
+- Performance optimization
+
+---
+
 ## Summary
 
 All priority items have been implemented:
@@ -206,5 +246,6 @@ All priority items have been implemented:
 | Camera Motion Compensation | ✅ | `src/cv_pipeline/utils/cmc.py` |
 | Metrics | ✅ | `src/cv_pipeline/utils/metrics.py` |
 | Unit Tests | ✅ | `tests/test_*.py` |
+| Integration Tests | ✅ | `tests/test_integration.py` |
 
 ---
