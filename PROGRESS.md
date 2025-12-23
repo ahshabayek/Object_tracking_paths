@@ -288,6 +288,54 @@ This document tracks the implementation progress of the Kedro + MLFlow CV pipeli
 
 ---
 
+## 2024-12-23 - Model Weights Management Implementation
+
+**Status**: ✅ Complete
+
+**Changes**: 
+- `src/cv_pipeline/utils/weights.py` - Comprehensive weights management module
+- `tests/test_weights.py` - Unit tests for weights utilities (32 tests)
+- Updated `src/cv_pipeline/utils/__init__.py` to export weights utilities
+
+**Features Implemented**:
+
+1. **WeightsManager Class**:
+   - `get_weights()` - Download and cache pretrained weights
+   - `list_available()` - List all registered models
+   - `list_cached()` - List cached models
+   - `get_model_info()` - Get model metadata
+   - `clear_cache()` - Clear cached weights
+   - `cache_size()` - Get total cache size
+
+2. **Weight Registry**:
+   - RT-DETR models (L, X variants)
+   - YOLOv11 models (N, S, M, L, X variants)
+   - OSNet Re-ID models (x1.0, x0.75, x0.5, x0.25, AIN)
+   - CLRNet lane detection (manual download)
+
+3. **Loading/Saving Utilities**:
+   - `load_weights()` - Load weights with DataParallel support
+   - `save_checkpoint()` - Save checkpoints with metadata
+   - `get_checkpoint_info()` - Inspect checkpoint contents
+   - `get_model_size()` - Get model parameter counts
+
+4. **Convenience Functions**:
+   - `get_pretrained_weights()` - Quick access to pretrained weights
+
+**Key Features**:
+- Automatic download with progress bar
+- Cache management (~/.cache/cv_pipeline/weights)
+- Handle 'module.' prefix from DataParallel
+- Support for different checkpoint formats
+- Metadata preservation (epoch, metrics, config)
+
+**Test Results**: 32 tests passed
+
+**Next Steps**:
+- Performance optimization
+
+---
+
 ## Summary
 
 All priority items have been implemented:
@@ -302,5 +350,6 @@ All priority items have been implemented:
 | Unit Tests | ✅ | `tests/test_*.py` |
 | Integration Tests | ✅ | `tests/test_integration.py` |
 | MLFlow Utilities | ✅ | `src/cv_pipeline/utils/mlflow_utils.py` |
+| Model Weights | ✅ | `src/cv_pipeline/utils/weights.py` |
 
 ---

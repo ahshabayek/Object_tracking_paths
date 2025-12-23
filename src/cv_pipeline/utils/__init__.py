@@ -44,6 +44,14 @@ from cv_pipeline.utils.visualization import (
     draw_scene,
     draw_tracks,
 )
+from cv_pipeline.utils.weights import (
+    WeightsManager,
+    get_checkpoint_info,
+    get_model_size,
+    get_pretrained_weights,
+    load_weights,
+    save_checkpoint,
+)
 
 __all__ = [
     # Visualization
@@ -79,4 +87,11 @@ __all__ = [
     "log_lane_detection_metrics",
     "log_pipeline_run",
     "ExperimentTracker",
+    # Weights Management
+    "WeightsManager",
+    "get_pretrained_weights",
+    "load_weights",
+    "save_checkpoint",
+    "get_checkpoint_info",
+    "get_model_size",
 ]
