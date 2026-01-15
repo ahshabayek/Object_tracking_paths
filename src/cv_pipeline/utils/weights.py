@@ -21,88 +21,256 @@ DEFAULT_WEIGHTS_DIR = Path.home() / ".cache" / "cv_pipeline" / "weights"
 
 # Model weight registry with download URLs and expected checksums
 WEIGHT_REGISTRY: Dict[str, Dict[str, Any]] = {
-    # RT-DETR weights (Ultralytics)
+    # ============================================================
+    # RT-DETR weights (Ultralytics) - CVPR 2024
+    # ============================================================
     "rtdetr-l": {
         "url": "https://github.com/ultralytics/assets/releases/download/v0.0.0/rtdetr-l.pt",
         "filename": "rtdetr-l.pt",
         "size_mb": 126,
         "framework": "ultralytics",
+        "description": "RT-DETR Large - 53.1% AP @ 108 FPS",
     },
     "rtdetr-x": {
         "url": "https://github.com/ultralytics/assets/releases/download/v0.0.0/rtdetr-x.pt",
         "filename": "rtdetr-x.pt",
         "size_mb": 232,
         "framework": "ultralytics",
+        "description": "RT-DETR Extra Large - Higher accuracy",
     },
-    # YOLOv11 weights
+    # ============================================================
+    # D-FINE weights - ICLR 2025 Spotlight (Apache 2.0 License)
+    # https://github.com/Peterande/D-FINE
+    # ============================================================
+    "dfine-n": {
+        "url": "https://github.com/Peterande/D-FINE/releases/download/v1.0/dfine_n_coco.pth",
+        "filename": "dfine_n_coco.pth",
+        "size_mb": 20,
+        "framework": "dfine",
+        "description": "D-FINE Nano - Fast inference",
+    },
+    "dfine-s": {
+        "url": "https://github.com/Peterande/D-FINE/releases/download/v1.0/dfine_s_coco.pth",
+        "filename": "dfine_s_coco.pth",
+        "size_mb": 35,
+        "framework": "dfine",
+        "description": "D-FINE Small - 48.5% AP",
+    },
+    "dfine-m": {
+        "url": "https://github.com/Peterande/D-FINE/releases/download/v1.0/dfine_m_coco.pth",
+        "filename": "dfine_m_coco.pth",
+        "size_mb": 70,
+        "framework": "dfine",
+        "description": "D-FINE Medium - 52.3% AP",
+    },
+    "dfine-l": {
+        "url": "https://github.com/Peterande/D-FINE/releases/download/v1.0/dfine_l_coco.pth",
+        "filename": "dfine_l_coco.pth",
+        "size_mb": 140,
+        "framework": "dfine",
+        "description": "D-FINE Large - 54.0% AP",
+    },
+    "dfine-x": {
+        "url": "https://github.com/Peterande/D-FINE/releases/download/v1.0/dfine_x_coco.pth",
+        "filename": "dfine_x_coco.pth",
+        "size_mb": 280,
+        "framework": "dfine",
+        "description": "D-FINE Extra Large - 57.4% AP (Best)",
+    },
+    # ============================================================
+    # YOLO-World weights (Open-Vocabulary Detection)
+    # https://github.com/AILab-CVC/YOLO-World
+    # ============================================================
+    "yoloworld-s": {
+        "url": "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8s-world.pt",
+        "filename": "yolov8s-world.pt",
+        "size_mb": 25,
+        "framework": "ultralytics",
+        "description": "YOLO-World Small - Zero-shot detection",
+    },
+    "yoloworld-m": {
+        "url": "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8m-world.pt",
+        "filename": "yolov8m-world.pt",
+        "size_mb": 54,
+        "framework": "ultralytics",
+        "description": "YOLO-World Medium - Zero-shot detection",
+    },
+    "yoloworld-l": {
+        "url": "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8l-world.pt",
+        "filename": "yolov8l-world.pt",
+        "size_mb": 90,
+        "framework": "ultralytics",
+        "description": "YOLO-World Large - Zero-shot detection",
+    },
+    "yoloworld-x": {
+        "url": "https://github.com/ultralytics/assets/releases/download/v8.2.0/yolov8x-world.pt",
+        "filename": "yolov8x-world.pt",
+        "size_mb": 150,
+        "framework": "ultralytics",
+        "description": "YOLO-World Extra Large - Best zero-shot accuracy",
+    },
+    # ============================================================
+    # GroundingDINO weights (Text-Prompted Detection)
+    # https://github.com/IDEA-Research/GroundingDINO
+    # ============================================================
+    "groundingdino-tiny": {
+        "url": "https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha/groundingdino_swint_ogc.pth",
+        "filename": "groundingdino_swint_ogc.pth",
+        "size_mb": 693,
+        "framework": "groundingdino",
+        "description": "GroundingDINO Tiny (Swin-T) - Fast text-prompted detection",
+        "config": "GroundingDINO_SwinT_OGC.py",
+    },
+    "groundingdino-base": {
+        "url": "https://github.com/IDEA-Research/GroundingDINO/releases/download/v0.1.0-alpha2/groundingdino_swinb_cogcoor.pth",
+        "filename": "groundingdino_swinb_cogcoor.pth",
+        "size_mb": 938,
+        "framework": "groundingdino",
+        "description": "GroundingDINO Base (Swin-B) - Best text-prompted detection",
+        "config": "GroundingDINO_SwinB.cfg.py",
+    },
+    # ============================================================
+    # YOLOv11 weights (Ultralytics)
+    # ============================================================
     "yolo11n": {
         "url": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n.pt",
         "filename": "yolo11n.pt",
         "size_mb": 5.4,
         "framework": "ultralytics",
+        "description": "YOLOv11 Nano - Fastest",
     },
     "yolo11s": {
         "url": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11s.pt",
         "filename": "yolo11s.pt",
         "size_mb": 18.4,
         "framework": "ultralytics",
+        "description": "YOLOv11 Small",
     },
     "yolo11m": {
         "url": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11m.pt",
         "filename": "yolo11m.pt",
         "size_mb": 38.8,
         "framework": "ultralytics",
+        "description": "YOLOv11 Medium",
     },
     "yolo11l": {
         "url": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11l.pt",
         "filename": "yolo11l.pt",
         "size_mb": 49.0,
         "framework": "ultralytics",
+        "description": "YOLOv11 Large",
     },
     "yolo11x": {
         "url": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11x.pt",
         "filename": "yolo11x.pt",
         "size_mb": 109.3,
         "framework": "ultralytics",
+        "description": "YOLOv11 Extra Large - Best accuracy",
     },
+    # ============================================================
+    # YOLOv12 weights (Latest, with Area Attention)
+    # ============================================================
+    "yolo12n": {
+        "url": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo12n.pt",
+        "filename": "yolo12n.pt",
+        "size_mb": 6,
+        "framework": "ultralytics",
+        "description": "YOLOv12 Nano - 40.6% mAP @ 1.64ms",
+    },
+    "yolo12s": {
+        "url": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo12s.pt",
+        "filename": "yolo12s.pt",
+        "size_mb": 20,
+        "framework": "ultralytics",
+        "description": "YOLOv12 Small",
+    },
+    "yolo12m": {
+        "url": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo12m.pt",
+        "filename": "yolo12m.pt",
+        "size_mb": 42,
+        "framework": "ultralytics",
+        "description": "YOLOv12 Medium",
+    },
+    "yolo12l": {
+        "url": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo12l.pt",
+        "filename": "yolo12l.pt",
+        "size_mb": 52,
+        "framework": "ultralytics",
+        "description": "YOLOv12 Large",
+    },
+    "yolo12x": {
+        "url": "https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo12x.pt",
+        "filename": "yolo12x.pt",
+        "size_mb": 115,
+        "framework": "ultralytics",
+        "description": "YOLOv12 Extra Large - 55.2% mAP",
+    },
+    # ============================================================
+    # RF-DETR weights (Roboflow, DINOv2 backbone)
+    # https://github.com/roboflow/rf-detr
+    # ============================================================
+    "rfdetr-b": {
+        "url": "https://github.com/roboflow/rf-detr/releases/download/v1.0.0/rf-detr-base.pth",
+        "filename": "rf-detr-base.pth",
+        "size_mb": 120,
+        "framework": "rfdetr",
+        "description": "RF-DETR Base - 53.0% AP @ 3.52ms",
+    },
+    "rfdetr-l": {
+        "url": "https://github.com/roboflow/rf-detr/releases/download/v1.0.0/rf-detr-large.pth",
+        "filename": "rf-detr-large.pth",
+        "size_mb": 280,
+        "framework": "rfdetr",
+        "description": "RF-DETR Large - 54.7% AP",
+    },
+    # ============================================================
     # OSNet Re-ID weights
+    # ============================================================
     "osnet_x1_0": {
         "url": "https://github.com/KaiyangZhou/deep-person-reid/releases/download/v1.0.0/osnet_x1_0_imagenet.pth",
         "filename": "osnet_x1_0_imagenet.pth",
         "size_mb": 8.7,
         "framework": "torchreid",
+        "description": "OSNet x1.0 - Best Re-ID accuracy",
     },
     "osnet_x0_75": {
         "url": "https://github.com/KaiyangZhou/deep-person-reid/releases/download/v1.0.0/osnet_x0_75_imagenet.pth",
         "filename": "osnet_x0_75_imagenet.pth",
         "size_mb": 5.5,
         "framework": "torchreid",
+        "description": "OSNet x0.75",
     },
     "osnet_x0_5": {
         "url": "https://github.com/KaiyangZhou/deep-person-reid/releases/download/v1.0.0/osnet_x0_5_imagenet.pth",
         "filename": "osnet_x0_5_imagenet.pth",
         "size_mb": 2.8,
         "framework": "torchreid",
+        "description": "OSNet x0.5",
     },
     "osnet_x0_25": {
         "url": "https://github.com/KaiyangZhou/deep-person-reid/releases/download/v1.0.0/osnet_x0_25_imagenet.pth",
         "filename": "osnet_x0_25_imagenet.pth",
         "size_mb": 1.0,
         "framework": "torchreid",
+        "description": "OSNet x0.25 - Fastest Re-ID",
     },
     "osnet_ain_x1_0": {
         "url": "https://github.com/KaiyangZhou/deep-person-reid/releases/download/v1.0.0/osnet_ain_x1_0_msmt17.pth",
         "filename": "osnet_ain_x1_0_msmt17.pth",
         "size_mb": 8.8,
         "framework": "torchreid",
+        "description": "OSNet-AIN x1.0 (MSMT17)",
     },
+    # ============================================================
     # CLRNet Lane Detection
+    # ============================================================
     "clrnet_culane_r18": {
         "url": None,  # Manual download required
         "filename": "clrnet_culane_r18.pth",
         "size_mb": 44,
         "framework": "clrnet",
         "manual": True,
+        "description": "CLRNet CULane ResNet-18",
     },
     "clrnet_culane_r34": {
         "url": None,
@@ -110,6 +278,7 @@ WEIGHT_REGISTRY: Dict[str, Dict[str, Any]] = {
         "size_mb": 85,
         "framework": "clrnet",
         "manual": True,
+        "description": "CLRNet CULane ResNet-34",
     },
     "clrnet_tusimple_r18": {
         "url": None,
@@ -117,6 +286,7 @@ WEIGHT_REGISTRY: Dict[str, Dict[str, Any]] = {
         "size_mb": 44,
         "framework": "clrnet",
         "manual": True,
+        "description": "CLRNet TuSimple ResNet-18",
     },
 }
 
